@@ -35,10 +35,9 @@ except Exception as e:
 # manual x positipon
 # define neptun mode (1 = in browser, 2 = separate window)
 # time to start looping (hh:mm:ss)
-
+window = Tk()
 
 while True:
-    window = Tk()
     def beállítások():
         settings = True
         while settings:
@@ -115,10 +114,10 @@ while True:
 
     settings_l = "beállítások"
 
-
     beállítások_button = Button(window, text=settings_l, command=beállítások, font=("Comic Sans", 30))
 
     beállítások_button.pack()
+
 
     def indítás():
         print('Neptun FOS/start neptun run')
@@ -176,18 +175,14 @@ while True:
             if found:
                 found_neptuns = found_neptuns + 1
                 runing = True
-        input('Found ' + str(found_neptuns) + ' neptuns')
+                pass
+        
 
 
     running_l = "indítás"
 
     indítás_button = Button(window, text=running_l, command=indítás, font=("Comic Sans", 50))
     indítás_button.pack()
-
-
-
-
-
 
     os.system('cls' if os.name == 'nt' else 'clear')
     # chose from settings or start neptun run countdown
@@ -378,4 +373,3 @@ while False:
         runing = False
         if found:
             runing = True
-            
