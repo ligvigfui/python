@@ -38,7 +38,6 @@ def receive_response(client_socket) -> str:
     return header + body
 
 def login(credentials, host, port) -> bool:
-    
     # Example usage
     credentials1 = hash.encode(credentials)
 
