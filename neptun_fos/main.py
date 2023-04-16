@@ -1,99 +1,88 @@
 import datetime
+import queue
 import pyautogui
 import json
 import os
-import socket
 import hash
 
-def create_tcp_connection(ip_address, port) -> socket.socket:
-    # Create a TCP socket
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+
+
+def convert_time(time: str) -> int:
+    # convert time from HH:MM:SS to seconds
+    time = time.split(":")
+    time = int(time[0]) * 3600 + int(time[1]) * 60 + int(time[2])
+    return time
     
-    # Connect the socket to the specified address and port
-    client_socket.connect((ip_address, port))
     
-    return client_socket
+def wait_for_time(ip: str, port: int, email: str, password: str, counter: list, que: queue.Queue, time: str) -> bool:
+    sum = hash.login_queue(ip, port, email, password, counter, que)
+    # convert time to seconds
+    time2 = convert_time(time)
+    # if time is in the past add 24 hours
+    if time2 < datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
+        # wait till tomorrow
+        pyautogui.sleep(86400 - (datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second))
+    # if time is in the next hour
+    if time2 < datetime.datetime.now().hour * 3600 + 3600:
+        # start logging in
+        while True:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("waiting for time: " + time)
+            print(str(time2 - (datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second)) + " seconds left...")
+            sum = hash.login_queue(ip, port, email, password, counter, que)
+            #exit if sum is less then 5
+            if sum < 2:
+                return False
+            # if time is in the next 2 seconds wait for it
+            if time2 == datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second +2:
+                while True:
+                    if time2 == datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
+                        return True
+            pyautogui.sleep(0.999)
 
-def send_get_request(client_socket, host, credentials):
-    # Compose the GET request message
-    request = "GET /login_neptun_fos HTTP/1.1\r\n"
-    request += f"Host: {host}\r\n"
-    request += f"Credentials: {credentials}\r\n\r\n"
-
-    # Send the GET request message
-    client_socket.send(request.encode())
-
-def receive_response(client_socket) -> str:
-    # Receive the response header
-    header = ""
-    while not header.endswith("\r\n\r\n"):
-        header += client_socket.recv(1).decode()
-
-    # Extract the content length from the header
-    content_length = int(header.split("Content-Length: ")[1].split("\r\n")[0])
-
-    # Receive the response body
-    body = client_socket.recv(content_length).decode()
-
-    return header + body
-
-def login(credentials, host, port) -> bool:
-    # Example usage
-    credentials1 = hash.encode(credentials)
-
-    # open client socket
-    client_socket = create_tcp_connection(host, port)
-
-    # Assume that client_socket is already connected
-    send_get_request(client_socket, host, credentials1)
-
-    # Example usage
-    response = receive_response(client_socket)
-    response = response.split("\r\n\r\n")[1]
-    stuff = hash.decode(response, data["credentials"])
-    if stuff == "Ok":
-        print("Login successful")
-        return False
-    elif stuff == "Wc":
-        print("Wrong credentials")
-    elif stuff == "Nh":
-        print("Server responded badly")
-    elif stuff == "Nr":
-        print("No response from server")
-    else:
-        print("Unknown error")
-    return True
+def wait_time_amount(ip: str , port: int, email: str, password: str, counter: list, que: queue.Queue, time: str) -> bool:
+    # add time to current time
+    time = convert_time(time)
+    time = datetime.datetime.now() + datetime.timedelta(seconds=time)
+    return wait_for_time(ip, port, email, password, counter, que, time.strftime("%H:%M:%S"))
     
 
+def read_cfg() -> dict:
+    # read cfg file
+    try:
+        # Open the file in read mode
+        with open("cfg.json", "r") as file:
+            # Read the contents of the file
+            data = json.load(file)
+        return data
+    except Exception as e:
+        # Handle any exceptions that might have been raised
+        
+        # The data you want to write to the file
+        data = {
+            "ip": "ligvigfui.ddns.net:7878",
+            "email": "email@something.com",
+            "password": "password123",
+            "targetting": "auto",
+            "x_position": 1240,
+            "neptun_mode": "separate_windows",
+            "start_time": "00:00:02",
+            "start_method": "after_delay"
+        }
+
+        # Convert the data to a JSON string
+        json_string = json.dumps(data, indent=4)
+
+        # Open the file
+        with open("cfg.json", "w") as file:
+            # Write the JSON string to the file
+            file.write(json_string)
+        return data
 
 
 # read cfg file
-try:
-    # Open the file in read mode
-    with open("cfg.json", "r") as file:
-        # Read the contents of the file
-        data = json.load(file)
-except Exception as e:
-    # Handle any exceptions that might have been raised
-    
-    # The data you want to write to the file
-    data = {
-        "credentials": "email@something.com:password123",
-        "targetting": "auto",
-        "x_position": 1240,
-        "neptun_mode": "separate_windows",
-        "start_time": "00:00:02",
-        "start_method": "after_delay"
-    }
-
-    # Convert the data to a JSON string
-    json_string = json.dumps(data, indent=4)
-
-    # Open the file
-    with open("cfg.json", "w") as file:
-        # Write the JSON string to the file
-        file.write(json_string)
-
+data = read_cfg()
 
 
 
@@ -103,60 +92,73 @@ except Exception as e:
 # time to start looping (hh:mm:ss)
 
 
-host = "127.0.0.1"
 port = 7878
+counter = [0]
+que = queue.Queue()
 
 while True:
     os.system('cls' if os.name == 'nt' else 'clear')
     # chose from settings or start neptun run countdown
-    print('Welcome to Neptun FOS/main menu!')
+    print('Welcome to NeptunCRF/main menu!')
     print('Type the number of the action you want to do: ')
     print('1. Settings')
-    action = input('2. Start the neptun run')
+    print('2. Start the neptun run')
+    print('3. Exit')
+    action = input()
     if action == '1':
         settings = True
         while settings:
             os.system('cls' if os.name == 'nt' else 'clear')
             # settings
-            print('Neptun FOS/settings')
+            print('NeptunCRF/settings')
             print('Type the number of the action you want to do: ')
-            print('1. Change credentials          \t\tCurrently: ' + data["credentials"])
-            print('2. Change targetting mode      \t\tCurrently: ' + data["targetting"])
-            print('3. Change x position           \t\tCurrently: ' + str(data["x_position"]))
-            print('4. Change how you opened neptun\t\tCurrently: ' + data["neptun_mode"])
-            print('5. Change when to start the run\t\tCurrently: ' + data["start_time"])
-            print('6. How to start the run        \t\tCurrently: ' + data["start_method"])
-            actiona = input('7. Save and return to main menu')
+            print('1. Change email                \t\tCurrently: ' + data["email"])
+            print('2. Change password             \t\tCurrently: ' + data["password"])
+            print('3. Change targetting mode      \t\tCurrently: ' + data["targetting"])
+            print('4. Change x position           \t\tCurrently: ' + str(data["x_position"]))
+            print('5. Change how you opened neptun\t\tCurrently: ' + data["neptun_mode"])
+            print('6. Change when to start the run\t\tCurrently: ' + data["start_time"])
+            print('7. How to start the run        \t\tCurrently: ' + data["start_method"])
+            print('8. Save and return to main menu')
+            print('9. Discard changes')
+            actiona = input()
             if actiona == '1':
-                # change credentials
+                # change email
                 os.system('cls' if os.name == 'nt' else 'clear')
-                print('Neptun FOS/settings/credentials')
-                print('Enter your new credentials: \t\tCurrently: ' + data["credentials"])
-                username = input('Username: ')
-                password = input('Password: ')
-                data["credentials"] = username + ':' + password
+                print('NeptunCRF/settings/email')
+                print('Enter your new email: \t\tCurrently: ' + data["email"])
+                email = input('email: ')
+                data["email"] = email
             elif actiona == '2':
+                # change password
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print('NeptunCRF/settings/password')
+                print('Enter your new password: \tCurrently: ' + data["password"])
+                password = input('password: ')
+                data["password"] = password
+            elif actiona == '3':
                 # change targetting mode
                 os.system('cls' if os.name == 'nt' else 'clear')
-                print('Neptun FOS/settings/targetting mode')
+                print('NeptunCRF/settings/targetting mode')
                 print('Enter your new targetting mode: \tCurrently: ' + data["targetting"])
                 print('1. Auto')
-                hihi = input('2. Manual')
+                print('2. Manual')
+                hihi = input()
                 if hihi == '1':
                     data["targetting"] = 'auto'
                 elif hihi == '2':
                     data["targetting"] = 'manual'
-            elif actiona == '3':
+            elif actiona == '4':
                 # change x position
                 os.system('cls' if os.name == 'nt' else 'clear')
-                print('Neptun FOS/settings/x position')
+                print('NeptunCRF/settings/x position')
                 input('Hover your cursor above the "Save" button and press enter')
                 x_position = pyautogui.position()[0]
                 data["x_position"] = x_position
-            elif actiona == '4':
+            elif actiona == '5':
                 # change neptun mode
                 os.system('cls' if os.name == 'nt' else 'clear')
-                print('Neptun FOS/settings/neptun mode')
+                print('NeptunCRF/settings/neptun mode')
                 print('Enter your new neptun mode: \t\tCurrently: ' + data["neptun_mode"])
                 print('1. In browser')
                 hihi = input('2. Separate window')
@@ -164,16 +166,16 @@ while True:
                     data["neptun_mode"] = 'in_browser'
                 elif hihi == '2':
                     data["neptun_mode"] = 'separate_windows'
-            elif actiona == '5':
+            elif actiona == '6':
                 # change start time
                 os.system('cls' if os.name == 'nt' else 'clear')
-                print('Neptun FOS/settings/start time')
+                print('NeptunCRF/settings/start time')
                 print('Enter your new start time with the format (hh:mm:ss) \t\tCurrently: ' + data["start_time"])
                 data["start_time"] = input('Time: ')
-            elif actiona == '6':
+            elif actiona == '7':
                 # change start method
                 os.system('cls' if os.name == 'nt' else 'clear')
-                print('Neptun FOS/settings/start method')
+                print('NeptunCRF/settings/start method')
                 print('Enter your new start method: \t\tCurrently: ' + data["start_method"])
                 print('1. At time')
                 hihi = input('2. After delay')
@@ -181,7 +183,7 @@ while True:
                     data["start_method"] = 'at_time'
                 elif hihi == '2':
                     data["start_method"] = 'after_delay'
-            elif actiona == '7':
+            elif actiona == '8':
                 # save settings
                 # Convert the data to a JSON string
                 json_string = json.dumps(data, indent=4)
@@ -191,29 +193,28 @@ while True:
                     # Write the JSON string to the file
                     file.write(json_string)
                 settings = False
+            elif actiona == '9':
+                # discard changes
+                # Open the file
+                json_file = open("cfg.json", "r")
+                
+                data = json.load(json_file)
             else:
-                input('Invalid action: ' + actiona + '\nPress enter to continue...')
+                input('Invalid action: ' + actiona + '\nPress a key to continue...')
     elif action == '2':
-        if login(data["credentials"], host, port):
-            action = ''
-            continue
-        print('Neptun FOS/start neptun run')
+        print('NeptunCRF/start neptun run')
         if data["start_method"] == 'at_time':
             # wait for start time
-            print('Waiting for start time...')
-            while True:
-                if datetime.datetime.now().strftime("%H:%M:%S") >= data["start_time"]:
-                    pyautogui.sleep(0.2)
-                    break
+            if not wait_for_time(data["ip"] , port, data["email"], data["password"] , counter, que, data["start_time"]):
+                input("Failed to login multiple times")
+                actiona = ""
+                continue
         elif data["start_method"] == 'after_delay':
-            # convert data["start_time"] to seconds
-            delay = int(data["start_time"][0:2]) * 3600 + int(data["start_time"][3:5]) * 60 + int(data["start_time"][6:8])
-            # wait for delay
-            print('Waiting for delay: ' + str(delay) + ' seconds')
-            for second in range(delay):
-                os.system('cls' if os.name == 'nt' else 'clear')
-                print(str(delay - second) + ' seconds left')
-                pyautogui.sleep(1)
+            # wait for start time
+            if not wait_time_amount(data["ip"] , port, data["email"], data["password"] , counter, que, data["start_time"]):
+                input("Failed to login multiple times")
+                actiona = ""
+                continue
             pyautogui.sleep(0.2)
         runing = True
         found_neptuns = 0
@@ -228,7 +229,7 @@ while True:
             steak = 0
             found = False
             screenshot = pyautogui.screenshot()
-            # Search for the color FFFFFF from top to bottom, starting from x=1250
+            # Search for the color 888888 from top to bottom, starting from x=1250
             for y in range(screenshot.size[1]):
                 if screenshot.getpixel((x_position, y)) == (128, 128, 128):
                     steak = steak + 1
@@ -252,6 +253,13 @@ while True:
                 found_neptuns = found_neptuns + 1
                 runing = True
         input('Found ' + str(found_neptuns) + ' neptuns')
+    elif action == '3':
+        command = input('Are you sure you want to exit? (y/n): ')
+        if command == 'y':
+            # exit
+            exit()
+        elif command == 'n':
+            continue
     else:
         input('Invalid input: ' + action + '\nPress enter to continue...')
         continue

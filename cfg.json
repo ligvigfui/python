@@ -1,8 +1,10 @@
 {
-    "credentials": "email@something.com:password123",
+    "ip": "127.0.0.1",
+    "email": "ligvigfui@gmail.com",
+    "password": "hali0123",
     "targetting": "auto",
     "x_position": 1240,
     "neptun_mode": "separate_windows",
-    "start_time": "00:00:02",
-    "start_method": "after_delay"
+    "start_time": "20:30:30",
+    "start_method": "at_time"
 }
