@@ -3,7 +3,9 @@
 A NeptunCRF a neptun tárgyfelvétel, illetve vizsgafelvétel könnyítésére írt software. További információk, kérdések esetén az elérhetőségek bekezdésnél lehet érdeklődni. A terméklapokon található fotók tájékoztató jellegűek azok a valóságtól kis mértékben eltérhetnek. 
 ## Software üzemeltetők adatai
 Software neve: NeptunCRF
+
 Levelezési email cím: ligvigfui@gmail.com
+
 Üzemeltető székhelye: Semmelweis utca 4. 211 szoba
 ## Rendelés leadás és vásárlás menete
 - A rendelés a fejlesztők megkeresésével történik. Kézpénzes, illetve átutalásos vásárlás esetén a fejlesztők email-ben elküldik a software letöltő link-jét. Személyes átvételre van lehetőség a Semmelweis kollégium 211-es szobályában. 
@@ -37,6 +39,7 @@ Pénzvisszatérítés esetén 2-5 munkanapot vesz igénybe a tranzakció. Alapes
 Amennyiben a Vásárló elállási jogával élni kíván, úgy köteles elállási szándékát tartalmazó egyértelmű nyilatkozatát elküldeni (email) a jelen ÁSZF 2. pontjában feltüntetett elérhetőségekre.
 
 Elektronikus kézbesítés, illetve elektronikus licencek esetében vásárlói elállásra a kézbesítés előtt van lehetősége a vásárlónak. Ilyen esetben elállási szándékát haladéktalanul jelezze elektronikus úton, webes ügyfélszolgálat, webes üzenet, vagy email levél útján a rendelés azonosítószámának megadásával. 
+
 A jogszabályi előírások értelmében letölthető szoftvertermékre, licencre a termék jellegéből adódóan (anyagtalan, virtuális, digitális letölthető termék) nem vonatkozik elállási jog (kivételek), ezért kérjük fordítson különös figyelmet a vásárolni kívánt szoftvertermék kiadásának, verziójának kiválasztására.
 ## Adatok kezelése (információs önrendelkezési jog és az információszabadság), GDPR
 Az üzemeltető a regisztrációhoz szükséges adatokat minden esetben az EURÓPAI PARLAMENT ÉS A TANÁCS (EU) 2016/679 RENDELETE előírásainak megfelelően biztonságosan és bizalmasan kezeli, azokat harmadik fél számára semmilyen esetben nem teszi hozzáférhetővé és nem adja át.  Az adatkezelés a GDPR adatkezelési infotv. (törvény) által előírt módokon és annak betartásával történik.
@@ -51,5 +54,5 @@ Amennyiben a fogyasztó jogainak megsértését észleli, jogosult panasszal for
 
 Az Webáruház a szóbeli panaszt, amennyiben arra lehetősége van, azonnal orvosolja. Ha a szóbeli panasz azonnali orvoslására nincs lehetőség, a panasz jellegéből adódóan vagy ha a Vásárló a panasz kezelésével nem ért egyet, akkor a Szolgáltató a panaszról jegyzőkönyvet vesz fel.
 
-## Copyright - Minden jog fenntartva
+### Copyright - Minden jog fenntartva
 
