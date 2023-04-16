@@ -20,9 +20,21 @@ def wait_for_time(ip: str, port: int, email: str, password: str, counter: list, 
     # convert time to seconds
     time2 = convert_time(time)
     # if time is in the past add 24 hours
-    if time2 < datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
+    if time2 - 1 < datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
         # wait till tomorrow
-        pyautogui.sleep(86400 - (datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second))
+        time_till_tomorrow = 86400 - (datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second)
+        while True:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("waiting for tomorrow: " + time)
+            print(str(time_till_tomorrow) + " seconds left...")
+            sum = hash.login_queue(ip, port, email, password, counter, que)
+            #exit if sum is less then 5
+            if sum < 2:
+                return False
+            if time_till_tomorrow <= 0:
+                break
+            time_till_tomorrow -= 1
+            pyautogui.sleep(0.9)
     # if time is in the next hour
     if time2 < datetime.datetime.now().hour * 3600 + 3600:
         # start logging in
@@ -34,10 +46,10 @@ def wait_for_time(ip: str, port: int, email: str, password: str, counter: list, 
             #exit if sum is less then 5
             if sum < 2:
                 return False
-            # if time is in the next 2 seconds wait for it
-            if time2 == datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second +2:
+            # if time is in the next 4 seconds wait for it
+            if time2 <= datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second +4:
                 while True:
-                    if time2 == datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
+                    if time2 <= datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
                         return True
             pyautogui.sleep(0.999)
 
