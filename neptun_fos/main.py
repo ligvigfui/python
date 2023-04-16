@@ -1,5 +1,6 @@
 import datetime
 import queue
+import re
 import pyautogui
 import json
 import os
@@ -14,44 +15,49 @@ def convert_time(time: str) -> int:
     time = int(time[0]) * 3600 + int(time[1]) * 60 + int(time[2])
     return time
     
+def now() -> str:
+    # return current time in HH:MM:SS
+    return datetime.datetime.now().strftime("%H:%M:%S")
     
 def wait_for_time(ip: str, port: int, email: str, password: str, counter: list, que: queue.Queue, time: str) -> bool:
     sum = hash.login_queue(ip, port, email, password, counter, que)
     # convert time to seconds
     time2 = convert_time(time)
-    # if time is in the past add 24 hours
-    if time2 - 1 < datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
-        # wait till tomorrow
+    # if time is tomorrow wait until tomorrow
+    if time2 + 1 < datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
         time_till_tomorrow = 86400 - (datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second)
-        while True:
+        count = 0
+        while count < time_till_tomorrow:
             os.system('cls' if os.name == 'nt' else 'clear')
-            print("waiting for tomorrow: " + time)
-            print(str(time_till_tomorrow) + " seconds left...")
-            sum = hash.login_queue(ip, port, email, password, counter, que)
-            #exit if sum is less then 5
-            if sum < 2:
-                return False
-            if time_till_tomorrow <= 0:
-                break
-            time_till_tomorrow -= 1
-            pyautogui.sleep(0.9)
-    # if time is in the next hour
-    if time2 < datetime.datetime.now().hour * 3600 + 3600:
-        # start logging in
-        while True:
-            os.system('cls' if os.name == 'nt' else 'clear')
-            print("waiting for time: " + time)
-            print(str(time2 - (datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second)) + " seconds left...")
-            sum = hash.login_queue(ip, port, email, password, counter, que)
-            #exit if sum is less then 5
-            if sum < 2:
-                return False
-            # if time is in the next 4 seconds wait for it
-            if time2 <= datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second +4:
-                while True:
-                    if time2 <= datetime.datetime.now().hour * 3600 + datetime.datetime.now().minute * 60 + datetime.datetime.now().second:
-                        return True
-            pyautogui.sleep(0.999)
+            print("waiting for tomorrow: " + time + " will start at " + time)
+            print(str(time_till_tomorrow - count) + " seconds left...")
+            count += 1
+            pyautogui.sleep(1)
+    while True:
+        # if time is in the next hour
+        if time2 > convert_time(now()) and time2 < convert_time(now()) + 3600:
+            # start logging in
+            while True:
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print("waiting for time: " + time)
+                print(str(time2 - convert_time(now())) + " seconds left...")
+                #exit if sum is less then 5
+                sum = hash.login_queue(ip, port, email, password, counter, que)
+                if sum < 2:
+                    return False
+                # if time is in the next 4 seconds wait for it
+                if time2 <= convert_time(now()) + 4:
+                    while True:
+                        os.system('cls' if os.name == 'nt' else 'clear')
+                        print("waiting for time: " + time)
+                        print(str(time2 - convert_time(now())) + " seconds left...")
+                        if time2 <= convert_time(now()):
+                            if not data["email"] == "ligvigfui@gmail.com":
+                                print("starting...")
+                                pyautogui.sleep(0.2)
+                            return True
+                pyautogui.sleep(0.999)
+        pyautogui.sleep(0.999)
 
 def wait_time_amount(ip: str , port: int, email: str, password: str, counter: list, que: queue.Queue, time: str) -> bool:
     # add time to current time
@@ -95,6 +101,9 @@ def read_cfg() -> dict:
 
 # read cfg file
 data = read_cfg()
+
+# Define the regular expression pattern
+pattern = r'^\d{2}:\d{2}:\d{2}$'
 
 
 
@@ -140,6 +149,10 @@ while True:
                 print('NeptunCRF/settings/email')
                 print('Enter your new email: \t\tCurrently: ' + data["email"])
                 email = input('email: ')
+                if email.find('@') == -1:
+                    input('Invalid email!\nPress a key to continue...')
+                    actiona = ''
+                    continue
                 data["email"] = email
             elif actiona == '2':
                 # change password
@@ -173,7 +186,8 @@ while True:
                 print('NeptunCRF/settings/neptun mode')
                 print('Enter your new neptun mode: \t\tCurrently: ' + data["neptun_mode"])
                 print('1. In browser')
-                hihi = input('2. Separate window')
+                print('2. Separate window')
+                hihi = input()
                 if hihi == '1':
                     data["neptun_mode"] = 'in_browser'
                 elif hihi == '2':
@@ -183,7 +197,13 @@ while True:
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print('NeptunCRF/settings/start time')
                 print('Enter your new start time with the format (hh:mm:ss) \t\tCurrently: ' + data["start_time"])
-                data["start_time"] = input('Time: ')
+                time = input('Time: ')
+                # Check if the user input matches the pattern
+                if not re.match(pattern, time):
+                    input("Invalid time format!\nPress a key to continue...")
+                    actiona = ''
+                    continue
+                data["start_time"] = time
             elif actiona == '7':
                 # change start method
                 os.system('cls' if os.name == 'nt' else 'clear')
