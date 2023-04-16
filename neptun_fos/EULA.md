@@ -6,7 +6,7 @@ A NeptunCRF a neptun tárgyfelvétel, illetve vizsgafelvétel könnyítésére �
 
 - Levelezési email cím: ligvigfui@gmail.com
 
-- Weboldala: ligvigfui.ddns.net/NeptunCRF
+- Weboldala: http://ligvigfui.ddns.net:7878/neptunCRF
 
 - Üzemeltető székhelye: Semmelweis utca 4. 211 szoba
 ## Rendelés leadás és vásárlás menete
