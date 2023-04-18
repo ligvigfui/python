@@ -6,9 +6,9 @@ A NeptunCRF a neptun tárgyfelvétel, illetve vizsgafelvétel könnyítésére �
 
 - Levelezési email cím: ligvigfui@gmail.com
 
-- Weboldala: ligvigfui.ddns.net/NeptunCRF
+- Weboldala: http://ligvigfui.ddns.net:7878/neptunCRF
 
-- Üzemeltető székhelye: Semmelweis utca 4. 211 szoba
+- Üzemeltető székhelye: Szeged Semmelweis utca 4. 211 szoba
 ## Rendelés leadás és vásárlás menete
 - A rendelés a fejlesztők megkeresésével történik. Kézpénzes, illetve átutalásos vásárlás esetén a fejlesztők email-ben elküldik a software letöltő link-jét. Személyes átvételre van lehetőség a Semmelweis kollégium 211-es szobályában. 
 - A rendelés leadásához, fizetéshez és a teljesítéshez a Vásárló részéről elengedhetetlen a pontos és valóságnak megfelelő vásárlási adatok megadása. Mivel a kézbesítés és számlázás feltétele a pontos és hiánytalan megrendelő adatok megadása ezért ez a vásárló kizárólagos felelőssége. Az Üzemeltető nem vállal felelősséget a pontatlan vagy hiányosan kitöltött megrendelési adatokból eredő kellemetlenségek vagy esetleges anyagi károk miatt.
