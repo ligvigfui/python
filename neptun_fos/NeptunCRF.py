@@ -7,7 +7,7 @@ import os
 import hash
 import do_stuff
 
-version = '0.2.0'
+version = '0.2.1-dev'
 
 def auto_targetting_fix(data):
     if data["targetting"] == "auto":
