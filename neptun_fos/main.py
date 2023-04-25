@@ -5,9 +5,16 @@ import pyautogui
 import json
 import os
 import hash
+import do_stuff
 
+version = '0.2.0'
 
-
+def auto_targetting_fix(data):
+    if data["targetting"] == "auto":
+        if data["course_or_exam"] == "exam":
+            data["x_position"] = 1770
+        elif data["course_or_exam"] == "course":
+            data["x_position"] = 1240
 
 def convert_time(time: str) -> int:
     # convert time from HH:MM:SS to seconds
@@ -86,7 +93,8 @@ def read_cfg() -> dict:
             "x_position": 1240,
             "neptun_mode": "separate_windows",
             "start_time": "00:00:02",
-            "start_method": "after_delay"
+            "start_method": "after_delay",
+            "course_or_exam": "exam"
         }
 
         # Convert the data to a JSON string
@@ -101,6 +109,7 @@ def read_cfg() -> dict:
 
 # read cfg file
 data = read_cfg()
+auto_targetting_fix(data)
 
 # Define the regular expression pattern
 pattern = r'^\d{2}:\d{2}:\d{2}$'
@@ -120,7 +129,7 @@ que = queue.Queue()
 while True:
     os.system('cls' if os.name == 'nt' else 'clear')
     # chose from settings or start neptun run countdown
-    print('Welcome to NeptunCRF/main menu!')
+    print('Welcome to NeptunCRF/main menu! Version: ' + version)
     print('Type the number of the action you want to do: ')
     print('1. Settings')
     print('2. Start the neptun run')
@@ -133,6 +142,7 @@ while True:
             # settings
             print('NeptunCRF/settings')
             print('Type the number of the action you want to do: ')
+            print('0. Change what you want to do  \t\tCurrently: ' + data["course_or_exam"])
             print('1. Change email                \t\tCurrently: ' + data["email"])
             print('2. Change password             \t\tCurrently: ' + data["password"])
             print('3. Change targetting mode      \t\tCurrently: ' + data["targetting"])
@@ -143,7 +153,21 @@ while True:
             print('8. Save and return to main menu')
             print('9. Discard changes')
             actiona = input()
-            if actiona == '1':
+            if actiona == '0':
+                os.system('cls' if os.name == 'nt' else 'clear')
+                print('NeptunCRF/settings/course_or_exam')
+                print('Enter what you want the program to do: ')
+                print('1. Course registration')
+                print('2. Exam registration')
+                what_to_do = input()
+                if what_to_do == '1':
+                    data["course_or_exam"] = "course"
+                elif what_to_do == '2':
+                    data["course_or_exam"] = "exam"
+                else:
+                    input('Invalid input!\nPress a key to continue...')
+                    continue
+            elif actiona == '1':
                 # change email
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print('NeptunCRF/settings/email')
@@ -151,7 +175,6 @@ while True:
                 email = input('email: ')
                 if email.find('@') == -1:
                     input('Invalid email!\nPress a key to continue...')
-                    actiona = ''
                     continue
                 data["email"] = email
             elif actiona == '2':
@@ -177,7 +200,7 @@ while True:
                 # change x position
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print('NeptunCRF/settings/x position')
-                input('Hover your cursor above the "Save" button and press enter')
+                input('Hover your cursor above the desired button and press enter')
                 x_position = pyautogui.position()[0]
                 data["x_position"] = x_position
             elif actiona == '5':
@@ -201,7 +224,6 @@ while True:
                 # Check if the user input matches the pattern
                 if not re.match(pattern, time):
                     input("Invalid time format!\nPress a key to continue...")
-                    actiona = ''
                     continue
                 data["start_time"] = time
             elif actiona == '7':
@@ -224,6 +246,7 @@ while True:
                 with open("cfg.json", "w") as file:
                     # Write the JSON string to the file
                     file.write(json_string)
+                auto_targetting_fix(data)
                 settings = False
             elif actiona == '9':
                 # discard changes
@@ -239,58 +262,22 @@ while True:
             # wait for start time
             if not wait_for_time(data["ip"] , port, data["email"], data["password"] , counter, que, data["start_time"]):
                 input("Failed to login multiple times")
-                actiona = ""
                 continue
         elif data["start_method"] == 'after_delay':
             # wait for start time
             if not wait_time_amount(data["ip"] , port, data["email"], data["password"] , counter, que, data["start_time"]):
                 input("Failed to login multiple times")
-                actiona = ""
                 continue
-            pyautogui.sleep(0.2)
-        runing = True
-        found_neptuns = 0
-        if data["targetting"] == 'manual':
-            x_position = data["x_position"]
-        elif data["targetting"] == 'auto':
-            x_position = 1240
         else:
-            input('Invalid targetting mode: ' + data["targetting"])
-            runing = False
-        while runing:
-            steak = 0
-            found = False
-            screenshot = pyautogui.screenshot()
-            # Search for the color 888888 from top to bottom, starting from x=1250
-            for y in range(screenshot.size[1]):
-                if screenshot.getpixel((x_position, y)) == (128, 128, 128):
-                    steak = steak + 1
-                else:
-                    steak = 0
-                if steak == 5:    
-                    pyautogui.click(x_position, y+5)
-                    pyautogui.moveTo(10,10)
-                    if data["neptun_mode"] == 'separate_windows':
-                        print('Switching to next desktop window')
-                        pyautogui.hotkey('ctrl', 'win', 'right')
-                    elif data["neptun_mode"] == 'in_browser':
-                        print('Switching to next tab')
-                        pyautogui.hotkey('ctrl', 'tab')
-                    print('Found the color at y = ' + str(y+5))
-                    found = True
-                    break
-            print('Broke out of loop: found: ' + str(found))
-            runing = False
-            if found:
-                found_neptuns = found_neptuns + 1
-                runing = True
-        input('Found ' + str(found_neptuns) + ' neptuns')
+            input("Invalid start method: " + data["start_method"] + "\nPress a key to continue...")
+            continue
+        do_stuff.do_stuff(data)
     elif action == '3':
         command = input('Are you sure you want to exit? (y/n): ')
         if command == 'y':
             # exit
             exit()
-        elif command == 'n':
+        else:
             continue
     else:
         input('Invalid input: ' + action + '\nPress enter to continue...')
