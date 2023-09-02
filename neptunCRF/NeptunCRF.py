@@ -92,7 +92,7 @@ def read_cfg() -> dict:
         
         # The data you want to write to the file
         data = {
-            "ip": "ligvigfui.ddns.net",
+            "ip": "neptuncrf.freeddns.org",
             "email": "email@something.com",
             "password": "password123",
             "targetting": "auto",
