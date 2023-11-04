@@ -86,6 +86,9 @@ def read_cfg() -> dict:
         with open("cfg.json", "r") as file:
             # Read the contents of the file
             data = json.load(file)
+            # if data["port"] does not exist, add it 
+            if not "port" in data:
+                data["port"] = 80
         return data
     except Exception as e:
         # Handle any exceptions that might have been raised
@@ -93,6 +96,7 @@ def read_cfg() -> dict:
         # The data you want to write to the file
         data = {
             "ip": "neptuncrf.freeddns.org",
+            "port": 80,
             "email": "email@something.com",
             "password": "password123",
             "targetting": "auto",
@@ -254,7 +258,6 @@ pattern = r'^\d{2}:\d{2}:\d{2}$'
 # time to start looping (hh:mm:ss)
 
 
-port = 7878
 counter = [0]
 que = queue.Queue()
 
@@ -273,12 +276,12 @@ while True:
         print('NeptunCRF/start neptun run')
         if data["start_method"] == 'at_time':
             # wait for start time
-            if not wait_for_time(data["ip"] , port, data["email"], data["password"] , counter, que, data["start_time"]):
+            if not wait_for_time(data["ip"] , data["port"], data["email"], data["password"] , counter, que, data["start_time"]):
                 input("Failed to login multiple times")
                 continue
         elif data["start_method"] == 'after_delay':
             # wait for start time
-            if not wait_time_amount(data["ip"] , port, data["email"], data["password"] , counter, que, data["start_time"]):
+            if not wait_time_amount(data["ip"] , data["port"], data["email"], data["password"] , counter, que, data["start_time"]):
                 input("Failed to login multiple times")
                 continue
         else:
