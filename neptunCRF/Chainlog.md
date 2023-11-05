@@ -6,10 +6,16 @@ Eduroam Guest does not let the connection throw. Use eduroam or a different netw
 
 Missing feature: A way to exit waiting without the need to restart the program.
 
-Possible Bug: conflict with neptun Power up!? could not fully reproduce the bug. Most likely not this program is the cause but neptun Power up/ neptun.
+Possible Bug: conflict with neptun Power up!? could not fully reproduce the bug. Most likely not this program is the cause but neptun Power up / neptun.
+Possible Bug: if you try to use the program with the same login credentials BOTH instences will crash (instead of only the new one).
 Bug: Discarding changes dosnt really discard changes
-Bug: if you try to use the program with the same login credentials BOTH instences will crash (instead of only the new one).
 Bug: Could not connect to server error is visible to users, no solutions are provided.
+
+## Version 0.3.0
+
+- Modified the server Host and port.
+- Moved the port to an option to the cfg.json file.
+- Possibly fixed the multiple users connectiong to the server with the same credentials bug.
 
 ## Version 0.2.1
 

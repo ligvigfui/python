@@ -1,0 +1,6 @@
+!/dist/NeptunCRF.exe
+hash.py
+do_stuff.py
+cfg.json
+/build
+/__pycache__

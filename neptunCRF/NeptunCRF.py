@@ -7,7 +7,7 @@ import os
 import hash
 import do_stuff
 
-version = '0.2.1-dev.1'
+version = '0.3.0'
 
 def auto_targetting_fix(data):
     if data["targetting"] == "auto":
@@ -86,9 +86,9 @@ def read_cfg() -> dict:
         with open("cfg.json", "r") as file:
             # Read the contents of the file
             data = json.load(file)
-            # if data["port"] does not exist, add it 
-            if not "port" in data:
-                data["port"] = 80
+        # if data["port"] does not exist, add it 
+        if not "port" in data:
+            data["port"] = 80
         return data
     except Exception as e:
         # Handle any exceptions that might have been raised

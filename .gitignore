@@ -1,0 +1,9 @@
+/build
+# ignore the dist folder and all its items except NeptunCRF.exe
+/*/dist/*
+main.spec
+/.venv
+/__pycache__
+/test
+/schonhertz jelenleti iv toltes
+*.spec

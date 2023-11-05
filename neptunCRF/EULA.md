@@ -2,11 +2,11 @@
 ## Megvásárolható termékek köre
 A NeptunCRF a neptun tárgyfelvétel, illetve vizsgafelvétel könnyítésére írt software. További információk, kérdések esetén az elérhetőségek bekezdésnél lehet érdeklődni. A terméklapokon található fotók tájékoztató jellegűek azok a valóságtól kis mértékben eltérhetnek. 
 ## Software üzemeltetők adatai
-- Software neve: NeptunCRF©
+- Software neve: NeptunCRF
 
 - Levelezési email cím: ligvigfui@gmail.com
 
-- Weboldala: http://ligvigfui.ddns.net:7878/neptunCRF
+- Weboldala: http://neptuncrf.freeddns.org
 
 - Üzemeltető székhelye: Szeged Semmelweis utca 4. 211 szoba
 ## Rendelés leadás és vásárlás menete
