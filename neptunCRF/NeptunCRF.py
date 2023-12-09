@@ -7,7 +7,7 @@ import os
 import hash
 import do_stuff
 
-version = '0.3.0'
+version = '0.4.0'
 
 def auto_targetting_fix(data):
     if data["targetting"] == "auto":
@@ -238,19 +238,18 @@ def settings(data):
             data = json.load(json_file)
         else:
             input('Invalid action: ' + actiona + '\nPress a key to continue...')
-    
-    
-    
+   
+
 
 
 # read cfg file
 data = read_cfg()
 auto_targetting_fix(data)
 
+
+
 # Define the regular expression pattern
 pattern = r'^\d{2}:\d{2}:\d{2}$'
-
-
 
 # define targetting mode (1 = auto, 2 = manual)
 # manual x positipon
